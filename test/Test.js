@@ -98,5 +98,18 @@ describe("MyTest", function () {
       });
     });
   });
+
+  //TODO: Lets check the EVENTS now
+  describe("Events", function () {
+    //Submit events
+    it("Should emit the event on withdrawls", async function () {
+      const { myTest, unlockTime, lockedAmount } = await loadFixture(
+        runEveryTime
+      );
+
+      await time.increaseTo(unlockTime);
+      await expect
+    });
+  });
   runEveryTime();
 });
