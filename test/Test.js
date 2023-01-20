@@ -112,10 +112,21 @@ describe("MyTest", function () {
         .to.emit(myTest, "Withdrawal")
         .withArgs(lockedAmount, anyValue);
     });
-
-
   });
 
-  //
+  //TODO: Transfer****
+  describe("Transfer", function () {
+    it("Should transfer the fund to the owner", async function () {
+      const { myTest, unlockTime, lockedAmount, owner } = await loadFixture(
+        runEveryTime
+      );
+      
+      await time.increaseTo(unlockTime);
+      await expect(myTest.withdraw()).to.changeEtherBalances(
+        [owner, myTest],
+        [lockedAmount, -lockedAmount]
+      );
+    });
+  });
   runEveryTime();
 });
