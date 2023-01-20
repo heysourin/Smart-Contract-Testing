@@ -108,7 +108,9 @@ describe("MyTest", function () {
       );
 
       await time.increaseTo(unlockTime);
-      await expect
+      await expect(myTest.withdraw())
+        .to.emit(myTest, "Withdrawal")
+        .withArgs(lockedAmount, anyValue);
     });
   });
   runEveryTime();
