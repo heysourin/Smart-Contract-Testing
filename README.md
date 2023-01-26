@@ -41,3 +41,10 @@
     Simple tests that verify a single behavior or component within a smart contract
   2. Integration tests: 
     More complex tests that validate etotaeen interactions between multiple oeere Components, including off-chain eror components such as oracles
+
+# Tools:
+  - Waffle
+  - Mocha
+  - Chai
+  - Solidity Coverage 
+  - Mocks: By imitating original, useful for local or unit tests
