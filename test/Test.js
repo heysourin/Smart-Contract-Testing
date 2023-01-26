@@ -18,7 +18,7 @@ describe("MyTest", function () {
     const ONE_YEAR_IN_SECONDS = 356 * 24 * 60 * 60;
     const ONE_GWEI = 1000000000;
     const lockedAmount = ONE_GWEI;
-    const unlockTime = (await time.latest()) + ONE_YEAR_IN_SECONDS;
+    const unlockTime = (await time.latest()) + ONE_YEAR_IN_SECONDS; //Setting unlock time one year after the contract deployment
 
     //GET ACCOUNTS:
     const [owner, otherAccount] = await ethers.getSigners();
@@ -35,7 +35,7 @@ describe("MyTest", function () {
 
   describe("Deployment", function () {
     //TODO: Checking unlock time:
-    it("Should chcek unlocked time", async function () {
+    it("Should set the right unlock time", async function () {
       const { myTest, unlockTime } = await loadFixture(runEveryTime); //Load fixture allows to run the function over and over again
 
       expect(await myTest.unlocktime()).to.equal(unlockTime);
@@ -61,7 +61,7 @@ describe("MyTest", function () {
       expect(contractBalance).to.equal(lockedAmount);
     });
 
-    //TODO: Checking conditions
+    //TODO: Checking conditions ***IMP***
     it("It should fail if the unlock time is not from the future", async function () {
       const latestTime = await time.latest();
       // console.log(latestTime);
@@ -69,11 +69,11 @@ describe("MyTest", function () {
 
       await expect(
         MyTest.deploy(latestTime, { value: "1" })
-      ).to.be.revertedWith("Unlock time should be in future"); //! error msg should be exact ******
+      ).to.be.revertedWith("Unlock time should be in future"); //! ****** error msg should be exact ******
     });
   });
 
-  describe("Withdrwal", function () {
+  describe("Withdrwals", function () {
     describe("Validations", function () {
       //Todo: Time check for the withdraw
       it("Should revert with the right if called too soon", async function () {
@@ -88,7 +88,7 @@ describe("MyTest", function () {
           runEveryTime
         );
 
-        const newTime = await time.increaseTo(unlockTime); //increasing current time to the future~ 'unlockTime'
+        await time.increaseTo(unlockTime); //increasing current time to the future~ 'unlockTime'
 
         // console.log(newTime);
         //! Connected another account to check if it gives error
@@ -107,26 +107,30 @@ describe("MyTest", function () {
         runEveryTime
       );
 
+      const contractBalance = await ethers.provider.getBalance(myTest.address);
+
       await time.increaseTo(unlockTime);
+      // ! ****************
       await expect(myTest.withdraw())
         .to.emit(myTest, "Withdrawal")
-        .withArgs(lockedAmount, anyValue);
+        .withArgs(contractBalance, anyValue);
     });
-  });
 
-  //TODO: Transfer****
-  describe("Transfer", function () {
-    it("Should transfer the fund to the owner", async function () {
-      const { myTest, unlockTime, lockedAmount, owner } = await loadFixture(
-        runEveryTime
-      );
-      
-      await time.increaseTo(unlockTime);
-      await expect(myTest.withdraw()).to.changeEtherBalances(
-        [owner, myTest],
-        [lockedAmount, -lockedAmount]
-      );
+    //TODO: Transfer****
+    describe("Transfers", function () {
+      it("Should transfer the funds to the owner", async function () {
+        const { myTest, unlockTime, lockedAmount, owner } = await loadFixture(
+          runEveryTime
+        );
+
+        await time.increaseTo(unlockTime);
+
+        await expect(myTest.withdraw()).to.changeEtherBalances(
+          [owner, myTest],
+          [lockedAmount, -lockedAmount]
+        );
+      });
     });
   });
-  runEveryTime();
+  // runEveryTime();
 });
