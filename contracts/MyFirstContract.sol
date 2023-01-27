@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
-// import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+pragma solidity ^0.8.0;
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract MyFirstContract {
 
     uint number;
-    // AggregatorV3Interface internal priceFeed;
+    AggregatorV3Interface internal priceFeed;
 
-    constructor(/*address _priceFeed*/) public {
-        // priceFeed = AggregatorV3Interface(_priceFeed);
+    constructor(address _priceFeed) public {
+        priceFeed = AggregatorV3Interface(_priceFeed);
         number = 0;
     }
 
@@ -20,15 +20,15 @@ contract MyFirstContract {
           return number;
       }
 
-    //  function getLatestPrice() public view returns (int) {
-    //     (
-    //         uint80 roundID,
-    //         int price,
-    //         uint startedAt,
-    //         uint timeStamp,
-    //         uint80 answeredInRound
-    //     ) = priceFeed.latestRoundData();
-    //     return price;
-    // }
+     function getLatestPrice() public view returns (int) {
+        (
+            uint80 roundID,
+            int price,
+            uint startedAt,
+            uint timeStamp,
+            uint80 answeredInRound
+        ) = priceFeed.latestRoundData();
+        return price;
+    }
 
 }
